@@ -4,7 +4,8 @@
 int main()
 {
     Ip_v4_prefix pref1;
-    pref1.base = 1;
-    printf("%d\n", pref1.base);
+    init_prefix(&pref1, 102000, 16);
+    printf("%u\n", pref1.base);
+    printf("%d\n", pref1.mask);
     return 0;
 }
