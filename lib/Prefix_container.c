@@ -234,7 +234,6 @@ int del_prefix(Prefix_container* container, unsigned int base, char mask)
                 }
                 else
                     container->root = NULL;
-                free(found_node);
                 return 0;
             }
             if (parent->left_son == found_node)
@@ -250,7 +249,6 @@ int del_prefix(Prefix_container* container, unsigned int base, char mask)
                 only_son->parent = parent;
                 del_place = only_son;
             }
-            free(found_node);
         }
     else
     {
@@ -266,7 +264,6 @@ int del_prefix(Prefix_container* container, unsigned int base, char mask)
         }
         else
             parent->left_son = NULL; // must be a left son because min_node was found by 'going left' only
-        free(min_node);
     }
 
     // fix tree (the AVL part)
