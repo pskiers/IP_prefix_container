@@ -27,7 +27,7 @@ int get_balance(Node* node)
 {
     if (node == NULL)
         return 0;
-    return get_height(node->left_son->height) - get_height(node->right_son->height);
+    return get_height(node->left_son) - get_height(node->right_son);
 }
 
 
@@ -60,10 +60,10 @@ Node* get_first_unbalanced(Node* added_node)
     Node* current_node = added_node;
     while (current_node)
     {
-        int balance = get_balance(&current_node);
+        int balance = get_balance(current_node);
         if (balance < -1 || balance > 1)
             return current_node;
-        current_node->height = get_height(&current_node);
+        current_node->height = get_height(current_node);
         current_node = current_node->parent;
     }
     return NULL;
@@ -134,10 +134,12 @@ Node* fix_one_subtree(Node* unbalanced_node)
     if (balance > 1) // left unbalance
     {
         int left_balance = get_balance(unbalanced_node->left_son);
-        if (left_balance = 1) // left left unbalance
+        if (left_balance == 1) // left left unbalance
+        {
             new_root = rotate_right(unbalanced_node);
             return new_root;
-        if (left_balance = -1) // left right unbalance
+        }
+        else // left right unbalance
         {
             rotate_left(unbalanced_node->left_son);
             new_root = rotate_right(unbalanced_node);
@@ -145,13 +147,15 @@ Node* fix_one_subtree(Node* unbalanced_node)
         }
     }
 
-    if (balance < -1) // right unbalance
+    else // right unbalance
     {
         int right_balance = get_balance(unbalanced_node->right_son);
-        if (right_balance = 1) // right right unbalance
+        if (right_balance == 1) // right right unbalance
+        {
             new_root = rotate_left(unbalanced_node);
             return new_root;
-        if (right_balance = -1) // right left unbalance
+        }
+        else // right left unbalance
         {
             rotate_right(unbalanced_node->right_son);
             new_root = rotate_left(unbalanced_node);
@@ -168,11 +172,12 @@ int add_prefix(Prefix_container* container, unsigned int base, char mask)
         return err;
     Node new_node = {.height=0, .left_son=NULL, .right_son=NULL, .parent=NULL, .prefix=&new_prefix};
     if (!container->root)
+    {
         container->root = &new_node;
         return 0;
-
+    }
     // find place for the node in the tree
-    Node* found_Node = find_palace_for_node(&container, &new_node);
+    Node* found_Node = find_palace_for_node(container, &new_node);
     // add node to tree
     int cmp = compare_prefixes(*found_Node->prefix, new_prefix);
     if (cmp == 0)
@@ -180,8 +185,10 @@ int add_prefix(Prefix_container* container, unsigned int base, char mask)
     if (cmp == -1)
         found_Node->left_son = &new_node;
     if (cmp == 1)
+    {
         found_Node->right_son = &new_node;
         new_node.parent = found_Node;
+    }
     // update heights
     Node* first_unbalanced = get_first_unbalanced(&new_node);
     // fix tree if necesery
@@ -284,8 +291,10 @@ char check_for_prefix(Prefix_container* container, unsigned int ip)
     {
         int cmp = compare_ip_address(*current_node->prefix, ip);
         if (cmp == 0)
+        {
             found_mask = current_node->prefix->mask;
             current_node = current_node->left_son;
+        }
         if (cmp == -1)
         {
             if (found_mask != -1)
