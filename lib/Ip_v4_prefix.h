@@ -13,5 +13,6 @@ int init_prefix(Ip_v4_prefix* prefix, unsigned int base, char mask);
 unsigned int max_address(Ip_v4_prefix* prefix);
 unsigned int get_bitmask(char mask);
 int compare_prefixes(Ip_v4_prefix prefix1, Ip_v4_prefix prefix2);
+int compare_ip_address(Ip_v4_prefix prefix, unsigned int ip_address);
 
 #endif

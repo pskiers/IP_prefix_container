@@ -29,6 +29,7 @@ unsigned int max_address(Ip_v4_prefix* prefix)
     return prefix->base | (~prefix->bitmask);
 }
 
+
 int compare_prefixes(Ip_v4_prefix prefix1, Ip_v4_prefix prefix2)
 {
     // returns -1 if prefix1 is bigger, 0 if prefixes equal, 1 if prefix2 is bigger
@@ -38,4 +39,15 @@ int compare_prefixes(Ip_v4_prefix prefix1, Ip_v4_prefix prefix2)
         (prefix1.base == prefix2.base && prefix1.mask > prefix2.mask ))
         return -1;
     return 1;
+}
+
+
+int compare_ip_address(Ip_v4_prefix prefix, unsigned int ip_address)
+{
+    unsigned int address_base = ip_address & prefix.bitmask;
+    if (address_base < prefix.base)
+        return -1;
+    if (address_base > prefix.base)
+        return 1;
+    return 0;
 }

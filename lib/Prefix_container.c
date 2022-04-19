@@ -271,3 +271,27 @@ int del_prefix(Prefix_container* container, unsigned int base, char mask)
     }
     return 0;
 }
+
+char check_for_prefix(Prefix_container* container, unsigned int ip)
+{
+    Node* current_node = container->root;
+    char found_mask = -1;
+    while (current_node)
+    {
+        int cmp = compare_ip_address(*current_node->prefix, ip);
+        if (cmp == 0)
+            found_mask = current_node->prefix->mask;
+            current_node = current_node->left_son;
+        if (cmp == -1)
+        {
+            if (found_mask != -1)
+                return found_mask;
+            current_node = current_node->left_son;
+        }
+        if (cmp == 1)
+        {
+            current_node = current_node->right_son;
+        }
+    }
+    return found_mask;
+}
