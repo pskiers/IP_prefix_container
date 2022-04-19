@@ -119,6 +119,40 @@ Node* rotate_left(Node* node)
     return right_tree; // new root after rotation
 }
 
+
+Node* fix_one_subtree(Node* unbalanced_node)
+{
+    int balance = get_balance(unbalanced_node);
+    Node* new_root;
+    if (balance > 1) // left unbalance
+    {
+        int left_balance = get_balance(unbalanced_node->left_son);
+        if (left_balance = 1) // left left unbalance
+            new_root = rotate_right(unbalanced_node);
+            return new_root;
+        if (left_balance = -1) // left right unbalance
+        {
+            rotate_left(unbalanced_node->left_son);
+            new_root = rotate_right(unbalanced_node);
+            return new_root;
+        }
+    }
+
+    if (balance < -1) // right unbalance
+    {
+        int right_balance = get_balance(unbalanced_node->right_son);
+        if (right_balance = 1) // right right unbalance
+            new_root = rotate_left(unbalanced_node);
+            return new_root;
+        if (right_balance = -1) // right left unbalance
+        {
+            rotate_right(unbalanced_node->right_son);
+            new_root = rotate_left(unbalanced_node);
+            return new_root;
+        }
+    }
+}
+
 int add_prefix(Prefix_container* container, unsigned int base, char mask)
 {
     Ip_v4_prefix new_prefix;
@@ -135,7 +169,7 @@ int add_prefix(Prefix_container* container, unsigned int base, char mask)
     // add node to tree
     int cmp = compare_prefixes(*found_Node->prefix, new_prefix);
     if (cmp == 0)
-        return -3;
+        return -3; // prefix already in the tree
     if (cmp == -1)
         *found_Node->left_son = &new_node;
     if (cmp == 1)
@@ -146,30 +180,94 @@ int add_prefix(Prefix_container* container, unsigned int base, char mask)
     // fix tree if necesery
     if (first_unbalanced)
     {
-        int balance = get_balance(first_unbalanced);
-        if (balance > 1) // left unbalance
-        {
-            int left_balance = get_balance(first_unbalanced->left_son);
-            if (left_balance = 1) // left left unbalance
-                rotate_right(first_unbalanced);
-            if (left_balance = -1) // left right unbalance
-            {
-                rotate_left(first_unbalanced->left_son);
-                rotate_right(first_unbalanced);
-            }
-        }
+        fix_one_subtree(first_unbalanced);
+    }
+    return 0;
+}
 
-        // right unbalance
-        if (balance < -1)
+
+Node* get_min_node(Node* node)
+{
+    Node* current = node;
+    while (current->left_son)
+        current = current->left_son;
+    return current;
+}
+
+
+int del_prefix(Prefix_container* container, unsigned int base, char mask)
+{
+    Ip_v4_prefix prefix_to_del;
+    int err = init_prefix(&prefix_to_del, base, mask);
+    if (err)
+        return err;
+    Node node_to_del = {.height=0, .left_son=NULL, .right_son=NULL, .parent=NULL, .prefix=&prefix_to_del};
+
+    if (!container->root)
+        return -3; // empty tree - prefix not in the tree
+    // find the prefix
+    Node* found_node = find_palace_for_node(container, &node_to_del);
+    if (compare_prefixes(*found_node->prefix, prefix_to_del))
+    {
+        return -3; // prefix not in the tree
+    }
+    // standard BST delete
+    Node* del_place = found_node;
+    if(!found_node->left_son || !found_node->right_son)
         {
-            int right_balance = get_balance(first_unbalanced->right_son);
-            if (right_balance = 1) // right right unbalance
-                rotate_left(first_unbalanced);
-            if (right_balance = -1) // right left unbalance
+            Node* only_son = found_node->left_son ? found_node->left_son : found_node->right_son;
+            Node* parent = found_node->parent;
+            if (!parent) // if found node is the root with not more than one son
             {
-                rotate_right(first_unbalanced->right_son);
-                rotate_left(first_unbalanced);
+                if (only_son) // it is an AVL BST so it means the tree has exactly 2 nodes
+                {
+                    only_son->parent = NULL;
+                    container->root = only_son; // change the root
+                    only_son->height = 1;
+                }
+                else
+                    container->root = NULL;
+                free(found_node);
+                return 0;
             }
+            if (parent->left_son == found_node)
+                parent->left_son = only_son;
+            else
+                parent->right_son = only_son;
+            if (!only_son)
+            {
+                del_place = parent;
+            }
+            else
+            {
+                only_son->parent = parent;
+                del_place = only_son;
+            }
+            free(found_node);
         }
+    else
+    {
+        Node* min_node = get_min_node(found_node);
+        found_node->prefix = min_node->prefix;
+        Node* only_son = min_node->right_son;
+        Node* parent = min_node->parent;
+        del_place = parent;
+        if (only_son)
+        {
+            only_son->parent = min_node->parent;
+            parent->left_son = only_son; // must be a left son because min_node was found by 'going left' only
+        }
+        else
+            parent->left_son = NULL; // must be a left son because min_node was found by 'going left' only
+        free(min_node);
     }
 
+    // fix tree (the AVL part)
+    Node* unbalanced = get_first_unbalanced(del_place);
+    while (unbalanced)
+    {
+        unbalanced = fix_one_subtree(unbalanced);
+        unbalanced = get_first_unbalanced(unbalanced);
+    }
+    return 0;
+}
