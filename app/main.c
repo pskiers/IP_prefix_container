@@ -1,18 +1,15 @@
 #include "../lib/Ip_v4_prefix.h"
+#include "../lib/Prefix_container.h"
 #include <stdio.h>
 
 int main()
 {
-    Ip_v4_prefix pref1;
-    int ret = init_prefix(&pref1, 4293079744, 26);
-    if (ret == -1 || ret == -2)
-        printf("Bad stuff\n");
-    else
-    {
-        printf("%x\n", pref1.base);
-        printf("%d\n", pref1.mask);
-        printf("%x\n", pref1.bitmask);
-        printf("%x\n", pref1.max_address);
-    }
+    Prefix_container container;
+    init_prefix_container(&container);
+    add_prefix(&container, 0xffff0000, 16);
+    add_prefix(&container, 0xfffff000, 20);
+    add_prefix(&container, 0xffffff00, 24);
+    add_prefix(&container, 0xfffffff0, 28);
+    del_prefix(&container, 0xffff0000, 16);
     return 0;
 }

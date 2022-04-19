@@ -4,12 +4,12 @@
 #include "Ip_v4_prefix.h"
 
 
-typedef struct
+typedef struct Node
 {
     Ip_v4_prefix* prefix;
-    Node* parent;
-    Node* left_son;
-    Node* right_son;
+    struct Node* parent;
+    struct Node* left_son;
+    struct Node* right_son;
     int height; // counted form leaves not from root
 } Node;
 
