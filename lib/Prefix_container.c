@@ -15,6 +15,28 @@ void init_prefix_container(Prefix_container* container)
 }
 
 
+int init_node(Node* node, unsigned int base, char mask)
+{
+    Ip_v4_prefix* new_prefix = (Ip_v4_prefix*) malloc(sizeof(Ip_v4_prefix));
+    int err = init_prefix(new_prefix, base, mask);
+    if (err)
+        return err;
+    node->height = 0;
+    node->left_son = NULL;
+    node->right_son = NULL;
+    node->parent = NULL;
+    node->prefix = new_prefix;
+    return 0;
+}
+
+
+void destroy_node(Node* node)
+{
+    free(node->prefix);
+    free(node);
+}
+
+
 int get_height(Node* node)
 {
     if (node == NULL)
@@ -90,7 +112,8 @@ Node* rotate_right(Node* node)
     node->parent = left_tree;
 
     node->left_son = left_right_tree;
-    left_right_tree->parent = node;
+    if (left_right_tree)
+        left_right_tree->parent = node;
 
     node->height = get_height(node);
     left_tree->height = get_height(left_tree);
@@ -118,7 +141,8 @@ Node* rotate_left(Node* node)
     node->parent = right_tree;
 
     node->right_son = right_left_tree;
-    right_left_tree->parent = node;
+    if (right_left_tree)
+        right_left_tree->parent = node;
 
     node->height = get_height(node);
     right_tree->height = get_height(right_tree);
@@ -150,7 +174,7 @@ Node* fix_one_subtree(Node* unbalanced_node)
     else // right unbalance
     {
         int right_balance = get_balance(unbalanced_node->right_son);
-        if (right_balance == 1) // right right unbalance
+        if (right_balance == -1) // right right unbalance
         {
             new_root = rotate_left(unbalanced_node);
             return new_root;
@@ -164,33 +188,33 @@ Node* fix_one_subtree(Node* unbalanced_node)
     }
 }
 
+
 int add_prefix(Prefix_container* container, unsigned int base, char mask)
 {
-    Ip_v4_prefix new_prefix;
-    int err = init_prefix(&new_prefix, base, mask);
+    Node* new_node = (Node*) malloc(sizeof(Node));
+    int err = init_node(new_node, base, mask);
     if (err)
         return err;
-    Node new_node = {.height=0, .left_son=NULL, .right_son=NULL, .parent=NULL, .prefix=&new_prefix};
     if (!container->root)
     {
-        container->root = &new_node;
+        container->root = new_node;
         return 0;
     }
     // find place for the node in the tree
-    Node* found_Node = find_palace_for_node(container, &new_node);
+    Node* found_Node = find_palace_for_node(container, new_node);
     // add node to tree
-    int cmp = compare_prefixes(*found_Node->prefix, new_prefix);
+    int cmp = compare_prefixes(*found_Node->prefix, *new_node->prefix);
     if (cmp == 0)
         return -3; // prefix already in the tree
     if (cmp == -1)
-        found_Node->left_son = &new_node;
+        found_Node->left_son = new_node;
     if (cmp == 1)
     {
-        found_Node->right_son = &new_node;
-        new_node.parent = found_Node;
+        found_Node->right_son = new_node;
+        new_node->parent = found_Node;
     }
     // update heights
-    Node* first_unbalanced = get_first_unbalanced(&new_node);
+    Node* first_unbalanced = get_first_unbalanced(new_node);
     // fix tree if necesery
     if (first_unbalanced)
     {
@@ -241,6 +265,7 @@ int del_prefix(Prefix_container* container, unsigned int base, char mask)
                 }
                 else
                     container->root = NULL;
+                destroy_node(del_place);
                 return 0;
             }
             if (parent->left_son == found_node)
@@ -256,6 +281,7 @@ int del_prefix(Prefix_container* container, unsigned int base, char mask)
                 only_son->parent = parent;
                 del_place = only_son;
             }
+            destroy_node(found_node);
         }
     else
     {
@@ -271,6 +297,7 @@ int del_prefix(Prefix_container* container, unsigned int base, char mask)
         }
         else
             parent->left_son = NULL; // must be a left son because min_node was found by 'going left' only
+        destroy_node(min_node);
     }
 
     // fix tree (the AVL part)
