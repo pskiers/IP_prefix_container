@@ -209,16 +209,16 @@ int add_prefix(Prefix_container* container, unsigned int base, char mask)
     if (cmp == -1)
         found_Node->left_son = new_node;
     if (cmp == 1)
-    {
         found_Node->right_son = new_node;
-        new_node->parent = found_Node;
-    }
+    new_node->parent = found_Node;
     // update heights
     Node* first_unbalanced = get_first_unbalanced(new_node);
     // fix tree if necesery
     if (first_unbalanced)
     {
-        fix_one_subtree(first_unbalanced);
+        Node* new_root = fix_one_subtree(first_unbalanced);
+        if (container->root == first_unbalanced)
+            container->root = new_root;
     }
     return 0;
 }
@@ -304,7 +304,10 @@ int del_prefix(Prefix_container* container, unsigned int base, char mask)
     Node* unbalanced = get_first_unbalanced(del_place);
     while (unbalanced)
     {
+        Node* temp = unbalanced;
         unbalanced = fix_one_subtree(unbalanced);
+        if (container->root == temp)
+            container->root = unbalanced;
         unbalanced = get_first_unbalanced(unbalanced);
     }
     return 0;
@@ -320,12 +323,10 @@ char check_for_prefix(Prefix_container* container, unsigned int ip)
         if (cmp == 0)
         {
             found_mask = current_node->prefix->mask;
-            current_node = current_node->left_son;
+            current_node = current_node->right_son;
         }
         if (cmp == -1)
         {
-            if (found_mask != -1)
-                return found_mask;
             current_node = current_node->left_son;
         }
         if (cmp == 1)
