@@ -43,7 +43,8 @@ void destroy_node_recursive(Node* node)
 
 void destroy_container(Prefix_container* container)
 {
-    destroy_node_recursive(container->root);
+    if (container->root)
+        destroy_node_recursive(container->root);
 }
 
 

@@ -22,7 +22,7 @@ typedef struct
 
 int add_prefix(Prefix_container* container, unsigned int base, char mask);
 int del_prefix(Prefix_container* container, unsigned int base, char mask);
-char check_for_prefix(Prefix_container* container, unsigned int ip);
-void destroy_container(Prefix_container* container);
+char check_for_prefix(Prefix_container* container, unsigned int ip); // check if there is a prefix that the address
+void destroy_container(Prefix_container* container); // basically a destructor
 
 #endif

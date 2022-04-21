@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1.0)
-project(CiExample VERSION 0.1.0)
+project(Prefix_Container VERSION 0.1.0)
 
-set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_C_STANDARD 11)
 
 include_directories(lib)
 

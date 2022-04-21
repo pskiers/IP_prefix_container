@@ -80,7 +80,7 @@ int main()
         else
             printf("\nIncorrect command\n");
     }
+    destroy();
     printf("Programm ended\n");
-
     return 0;
 }

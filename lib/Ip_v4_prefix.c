@@ -11,7 +11,6 @@ int init_prefix(Ip_v4_prefix* prefix, unsigned int base, char mask)
     prefix->base = base;
     prefix->bitmask = bitmask;
     prefix->mask = mask;
-    prefix->max_address = max_address(prefix);
     return 0;
 }
 
