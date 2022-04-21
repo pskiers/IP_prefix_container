@@ -285,18 +285,31 @@ int del_prefix(Prefix_container* container, unsigned int base, char mask)
         }
     else
     {
-        Node* min_node = get_min_node(found_node);
+        Node* min_node = get_min_node(found_node->right_son);
+
+        Ip_v4_prefix* temp = found_node->prefix;
         found_node->prefix = min_node->prefix;
+        min_node->prefix = temp;
+
         Node* only_son = min_node->right_son;
         Node* parent = min_node->parent;
         del_place = parent;
         if (only_son)
         {
             only_son->parent = min_node->parent;
-            parent->left_son = only_son; // must be a left son because min_node was found by 'going left' only
+            if (parent->left_son == only_son)
+                parent->left_son = only_son;
+            else
+                parent->right_son = only_son;
         }
         else
-            parent->left_son = NULL; // must be a left son because min_node was found by 'going left' only
+        {
+            if (parent->left_son == only_son)
+                parent->left_son = NULL;
+            else
+                parent->right_son = NULL;
+
+        }
         destroy_node(min_node);
     }
 
