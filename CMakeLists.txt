@@ -5,5 +5,8 @@ set (CMAKE_CXX_STANDARD 17)
 
 include_directories(lib)
 
+enable_testing()
+
 add_subdirectory(lib)
+add_subdirectory(test)
 add_subdirectory(app)
