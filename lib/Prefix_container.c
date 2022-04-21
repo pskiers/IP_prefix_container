@@ -1,17 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Prefix_container.h"
-#include "Ip_v4_prefix.h"
+
 
 int max(int a, int b)
 {
     return (a > b) ? a : b;
-}
-
-
-void init_prefix_container(Prefix_container* container)
-{
-    container->root = NULL;
 }
 
 
@@ -221,7 +215,7 @@ int add_prefix(Prefix_container* container, unsigned int base, char mask)
     // add node to tree
     int cmp = compare_prefixes(*found_Node->prefix, *new_node->prefix);
     if (cmp == 0)
-        return -3; // prefix already in the tree
+        return -1; // prefix already in the tree
     if (cmp == -1)
         found_Node->left_son = new_node;
     if (cmp == 1)
@@ -258,12 +252,12 @@ int del_prefix(Prefix_container* container, unsigned int base, char mask)
     Node node_to_del = {.height=0, .left_son=NULL, .right_son=NULL, .parent=NULL, .prefix=&prefix_to_del};
 
     if (!container->root)
-        return -3; // empty tree - prefix not in the tree
+        return -1; // empty tree - prefix not in the tree
     // find the prefix
     Node* found_node = find_palace_for_node(container, &node_to_del);
     if (compare_prefixes(*found_node->prefix, prefix_to_del))
     {
-        return -3; // prefix not in the tree
+        return -1; // prefix not in the tree
     }
     // standard BST delete
     Node* del_place = found_node;

@@ -20,7 +20,6 @@ typedef struct
     Node* root;
 } Prefix_container;
 
-void init_prefix_container(Prefix_container* container);
 int add_prefix(Prefix_container* container, unsigned int base, char mask);
 int del_prefix(Prefix_container* container, unsigned int base, char mask);
 char check_for_prefix(Prefix_container* container, unsigned int ip);

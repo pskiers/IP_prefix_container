@@ -5,9 +5,9 @@ int init_prefix(Ip_v4_prefix* prefix, unsigned int base, char mask)
 {
     unsigned int bitmask = get_bitmask(mask);
     if (bitmask == 0xffffffff)
-        return -1;  // return code for bad mask value
+        return -1;  // bad mask value
     if ((~bitmask & base) != 0) // significant part (with ones) of the base is longer than the mask - probably a mistake so better fail as soon as possible
-        return -2;  // return code for bad base
+        return -1;  // bad base
     prefix->base = base;
     prefix->bitmask = bitmask;
     prefix->mask = mask;
