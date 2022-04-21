@@ -21,7 +21,7 @@ int main()
     {
         printf("\nEnter command: ");
         scanf("%s", input);
-        while ((getchar()) != '\n');
+        while ((getchar()) != '\n'); // clear input buffer
         if (strcmp(input, "exit") == 0)
         {
             RUN = 0;
@@ -40,11 +40,11 @@ int main()
         {
             printf("\nEnter base of the prefix: ");
             scanf("%x", &base);
-            while ((getchar()) != '\n');
+            while ((getchar()) != '\n'); // clear input buffer
             printf("\nEnter mask of the prefix: ");
             scanf("%d", &temp);
             mask = (char) temp;
-            while ((getchar()) != '\n');
+            while ((getchar()) != '\n'); // clear input buffer
             err = add(base, mask);
             if (err)
                 printf("\nPrefix already in the container or entered incorrect prefix\n");
@@ -55,11 +55,11 @@ int main()
         {
             printf("\nEnter base of the prefix: ");
             scanf("%x", &base);
-            while ((getchar()) != '\n');
+            while ((getchar()) != '\n'); // clear input buffer
             printf("\nEnter mask of the prefix: ");
             scanf("%d", &temp);
             mask = (char) temp;
-            while ((getchar()) != '\n');
+            while ((getchar()) != '\n'); // clear input buffer
             err = del(base, mask);
             if (err)
                 printf("\nPrefix not in the container or entered incorrect prefix\n");
@@ -70,7 +70,7 @@ int main()
         {
             printf("\nEnter IP address to check: ");
             scanf("%x", &base);
-            while ((getchar()) != '\n');
+            while ((getchar()) != '\n'); // clear input buffer
             mask = check(base);
             if (mask == -1)
                 printf("\nAddress not in the container\n");

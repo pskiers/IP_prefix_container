@@ -5,6 +5,7 @@
 
 
 typedef struct Node
+/*  Node of an AVL binary search tree for ip prefixes*/
 {
     Ip_v4_prefix* prefix;
     struct Node* parent;
@@ -16,8 +17,9 @@ typedef struct Node
 
 
 typedef struct
+/*  Prefixes are stored in a data structure that is an AVL binary search tree */
 {
-    Node* root;
+    Node* root; // root of the tree
 } Prefix_container;
 
 int add_prefix(Prefix_container* container, unsigned int base, char mask);
