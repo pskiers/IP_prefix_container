@@ -6,9 +6,9 @@ Main goal of the project was to create management system for IPv4 prefixes.
 
 ## Content summary
 The project contains the following:
-- *library* - a C library containing implementation of the container and functions allowing for interactions with the container, as well as structure for IPv4 prefixes
-- *demo programme* - a simple interactive programme showcasing how the library can be used
-- *tests* - pretty self explanatory, tests for the library
+- **library** - a C library containing implementation of the container and functions allowing for interactions with the container, as well as structure for IPv4 prefixes
+- **demo programme** - a simple interactive programme showcasing how the library can be used
+- **tests** - pretty self explanatory, tests for the library
 
 
 ## Building the project
@@ -92,7 +92,7 @@ char check_for_prefix(Prefix_container* container, unsigned int ip); // check if
 void destroy_container(Prefix_container* container); // basically a destructor
 
 ```
-Addition and deletion of prefix is implemented like a standard AVL insertion and deletion. It is important to note that the *container allocates memory dynamically* so in order to avoid memory leaks, one should *use the destructor* provided for the container.
+Addition and deletion of prefix is implemented like a standard AVL insertion and deletion. It is important to note that the **container allocates memory dynamically** so in order to avoid memory leaks, one should **use the destructor** provided for the container.
 
 ### Single container
 If one container is all you need then an easier alternative to creating prefix container and using functions decalred in Prefix_container.h is using this module. This is basically a little simpler interface with some additionall limitations. Following are equivalents for the functions from Prefix_container.h, declared and defined in this module:
