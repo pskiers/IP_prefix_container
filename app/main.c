@@ -38,7 +38,7 @@ int main()
         }
         else if (strcmp(input, "add") == 0)
         {
-            printf("\nEnter base of the prefix: ");
+            printf("\nEnter base of the prefix (hex): ");
             scanf("%x", &base);
             while ((getchar()) != '\n'); // clear input buffer
             printf("\nEnter mask of the prefix: ");
@@ -53,7 +53,7 @@ int main()
         }
         else if (strcmp(input, "del") == 0)
         {
-            printf("\nEnter base of the prefix: ");
+            printf("\nEnter base of the prefix (hex): ");
             scanf("%x", &base);
             while ((getchar()) != '\n'); // clear input buffer
             printf("\nEnter mask of the prefix: ");
@@ -68,7 +68,7 @@ int main()
         }
         else if (strcmp(input, "check") == 0)
         {
-            printf("\nEnter IP address to check: ");
+            printf("\nEnter IP address to check (hex): ");
             scanf("%x", &base);
             while ((getchar()) != '\n'); // clear input buffer
             mask = check(base);
