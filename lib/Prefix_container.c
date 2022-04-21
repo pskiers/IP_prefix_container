@@ -37,6 +37,22 @@ void destroy_node(Node* node)
 }
 
 
+void destroy_node_recursive(Node* node)
+{
+    if (node->left_son)
+        destroy_node_recursive(node->left_son);
+    if (node->right_son)
+        destroy_node_recursive(node->right_son);
+    destroy_node(node);
+}
+
+
+void destroy_container(Prefix_container* container)
+{
+    destroy_node_recursive(container->root);
+}
+
+
 int get_height(Node* node)
 {
     if (node == NULL)
